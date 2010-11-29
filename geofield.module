@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * Implements hook_field_info().
+ */
+function geofield_field_info() {
+  return array(
+    'geofield' => array(
+      'label' => 'Geofield',
+      'description' => t('This field stores geo information.'),
+      'default_widget' => 'text_textfield',
+      'default_formatter' => 'default',
+    ),
+  );
+}
+
+/**
+ * Implements of hook_content_is_empty().
+ */
+function geofield_field_is_empty($item, $field) {
+  if (empty($item['lat']) || empty($item['lon'])) {
+    return TRUE;
+  }
+  return FALSE;
+}
+
+/**
+ * Implements hook_field_widget_info().
+ */
+function geofield_field_widget_info() {
+  return array(
+    'geofield_textfield' => array(
+      'label' => t('Geofield'),
+      'field types' => array('geofield'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_field_formatter_info().
+ *
+ */
+function geofield_field_formatter_info() {
+  $formats = array(
+    'default' => array(
+      'label' => t('Default geo field'),
+      'field types' => array('geofield'),
+    ),
+  );
+  return $formats;
+}
+
+/**
+ * Implements hook_field_widget_form().
+ */
+function geofield_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $base) {
+  $element = $base;
+  $element['lat'] = array(
+    '#title' => 'Latitude',
+    '#type' => 'textfield',
+    '#default_value' => isset($items[$delta]['lat']) ? $items[$delta]['lat'] : NULL,
+  );
+  $element['lon'] = array(
+    '#title' => 'Longitude',
+    '#type' => 'textfield',
+    '#default_value' => isset($items[$delta]['lat']) ? $items[$delta]['lat'] : NULL,
+  );
+  return $element;
+}
