@@ -57,13 +57,39 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance, $la
   $element = $base;
   $element['lat'] = array(
     '#title' => 'Latitude',
+    '#required' => TRUE,
     '#type' => 'textfield',
     '#default_value' => isset($items[$delta]['lat']) ? $items[$delta]['lat'] : NULL,
   );
   $element['lon'] = array(
     '#title' => 'Longitude',
+    '#required' => TRUE,
     '#type' => 'textfield',
     '#default_value' => isset($items[$delta]['lat']) ? $items[$delta]['lat'] : NULL,
+  );
+  $element['top_left_lat'] = array(
+    '#title' => 'Top Left Latitude',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#default_value' => isset($items[$delta]['top_left_lat']) ? $items[$delta]['top_left_lat'] : NULL,
+  );
+  $element['top_left_lon'] = array(
+    '#title' => 'Top Left Longitude',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#default_value' => isset($items[$delta]['top_left_lon']) ? $items[$delta]['top_left_lon'] : NULL,
+  );
+  $element['bottom_right_lat'] = array(
+    '#title' => 'Bottom Left Latitude',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#default_value' => isset($items[$delta]['bottom_right_lat']) ? $items[$delta]['bottom_right_lat'] : NULL,
+  );
+  $element['bottom_right_lon'] = array(
+    '#title' => 'Bottom Right Longitude',
+    '#required' => TRUE,
+    '#type' => 'textfield',
+    '#default_value' => isset($items[$delta]['bottom_right_lon']) ? $items[$delta]['bottom_right_lon'] : NULL,
   );
   return $element;
 }
