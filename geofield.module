@@ -18,10 +18,7 @@ function geofield_field_info() {
  * Implements of hook_content_is_empty().
  */
 function geofield_field_is_empty($item, $field) {
-  if (empty($item['lat']) || empty($item['lon'])) {
-    return TRUE;
-  }
-  return FALSE;
+  return (empty($item['lat']) || empty($item['lon']));
 }
 
 /**
@@ -41,55 +38,61 @@ function geofield_field_widget_info() {
  *
  */
 function geofield_field_formatter_info() {
-  $formats = array(
+  return array(
     'default' => array(
       'label' => t('Default geo field'),
       'field types' => array('geofield'),
     ),
   );
-  return $formats;
 }
 
 /**
  * Implements hook_field_widget_form().
  */
-function geofield_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $base) {
+function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
+  $langcode, $items, $delta, $base) {
   $element = $base;
   $element['lat'] = array(
     '#title' => 'Latitude',
-    '#required' => TRUE,
+    '#required' => FALSE,
     '#type' => 'textfield',
-    '#default_value' => isset($items[$delta]['lat']) ? $items[$delta]['lat'] : NULL,
+    '#default_value' => isset($items[$delta]['lat']) ?
+      $items[$delta]['lat'] : NULL,
   );
   $element['lon'] = array(
     '#title' => 'Longitude',
-    '#required' => TRUE,
+    '#required' => FALSE,
     '#type' => 'textfield',
-    '#default_value' => isset($items[$delta]['lat']) ? $items[$delta]['lat'] : NULL,
+    '#default_value' => isset($items[$delta]['lat']) ?
+      $items[$delta]['lat'] : NULL,
   );
-  $element['top_left_lat'] = array(
-    '#title' => 'Top Left Latitude',
-    '#required' => TRUE,
+  $element['left'] = array(
+    '#title' => 'Left Latitude',
+    '#required' => FALSE,
     '#type' => 'textfield',
-    '#default_value' => isset($items[$delta]['top_left_lat']) ? $items[$delta]['top_left_lat'] : NULL,
+    '#default_value' => isset($items[$delta]['left']) ?
+      $items[$delta]['left'] : NULL,
   );
-  $element['top_left_lon'] = array(
-    '#title' => 'Top Left Longitude',
-    '#required' => TRUE,
+  $element['top'] = array(
+    '#title' => 'Top Longitude',
+    '#required' => FALSE,
     '#type' => 'textfield',
-    '#default_value' => isset($items[$delta]['top_left_lon']) ? $items[$delta]['top_left_lon'] : NULL,
+    '#default_value' => isset($items[$delta]['top']) ?
+      $items[$delta]['top'] : NULL,
   );
-  $element['bottom_right_lat'] = array(
-    '#title' => 'Bottom Left Latitude',
-    '#required' => TRUE,
+  $element['right'] = array(
+    '#title' => 'Right Latitude',
+    '#required' => FALSE,
     '#type' => 'textfield',
-    '#default_value' => isset($items[$delta]['bottom_right_lat']) ? $items[$delta]['bottom_right_lat'] : NULL,
+    '#default_value' => isset($items[$delta]['right']) ?
+      $items[$delta]['right'] : NULL,
   );
-  $element['bottom_right_lon'] = array(
-    '#title' => 'Bottom Right Longitude',
-    '#required' => TRUE,
+  $element['bottom'] = array(
+    '#title' => 'Bottom Longitude',
+    '#required' => FALSE,
     '#type' => 'textfield',
-    '#default_value' => isset($items[$delta]['bottom_right_lon']) ? $items[$delta]['bottom_right_lon'] : NULL,
+    '#default_value' => isset($items[$delta]['bottom']) ?
+      $items[$delta]['bottom'] : NULL,
   );
   return $element;
 }
