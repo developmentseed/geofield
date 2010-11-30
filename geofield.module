@@ -63,8 +63,8 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
     '#title' => 'Longitude',
     '#required' => FALSE,
     '#type' => 'textfield',
-    '#default_value' => isset($items[$delta]['lat']) ?
-      $items[$delta]['lat'] : NULL,
+    '#default_value' => isset($items[$delta]['lon']) ?
+      $items[$delta]['lon'] : NULL,
   );
   $element['left'] = array(
     '#title' => 'Left Latitude',
@@ -95,4 +95,66 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
       $items[$delta]['bottom'] : NULL,
   );
   return $element;
+}
+
+/**
+ * Implementation of hook_feeds_node_processor_targets_alter().
+ */
+function geofield_feeds_processor_targets_alter(&$targets, $entity_type, $bundle_name) {
+  foreach (field_info_instances($entity_type, $bundle_name) as $name => $instance) {
+    $info = field_info_field($name);
+    if ($info['type'] == 'geofield') {
+      $real_target = $info['field_name'];
+    }
+  }
+  if ($entity_type == 'node') {
+    $targets[$real_target . ':lat'] = array(
+      'name' => t('Latitude'),
+      'callback' => 'geofield_set_target',
+      'real_target' => $real_target,
+    );
+    $targets[$real_target . ':lon'] = array(
+      'name' => t('Longitude'),
+      'callback' => 'geofield_set_target',
+      'real_target' => $real_target,
+    );
+    $targets[$real_target . ':left'] = array(
+      'name' => t('Left Latitude'),
+      'callback' => 'geofield_set_target',
+      'real_target' => $real_target,
+    );
+    $targets[$real_target . ':top'] = array(
+      'name' => t('Top Longitude'),
+      'callback' => 'geofield_set_target',
+      'real_target' => $real_target,
+    );
+    $targets[$real_target . ':right'] = array(
+      'name' => t('Right Latitude'),
+      'callback' => 'geofield_set_target',
+      'real_target' => $real_target,
+    );
+    $targets[$real_target . ':bottom'] = array(
+      'name' => t('Bottom Longitude'),
+      'callback' => 'geofield_set_target',
+      'real_target' => $real_target,
+    );
+  }
+}
+
+/**
+ * Example callback specified in hook_feeds_processor_targets_alter().
+ *
+ * @param $source
+ *   Field mapper source settings.
+ * @param $entity
+ *   An entity object, for instance a node object.
+ * @param $target
+ *   A string identifying the target on the node.
+ * @param $value
+ *   The value to populate the target with.
+ *
+ */
+function geofield_set_target($source, $entity, $target, $value) {
+  list($field_name, $sub_field) = explode(':', $target, 2);
+  $entity->{$field_name}['und'][0][$sub_field] = $value;
 }
