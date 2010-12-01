@@ -107,38 +107,36 @@ function geofield_feeds_processor_targets_alter(&$targets, $entity_type, $bundle
       $real_target = $info['field_name'];
     }
   }
-  if ($entity_type == 'node') {
-    $targets[$real_target . ':lat'] = array(
-      'name' => t('Latitude'),
-      'callback' => 'geofield_set_target',
-      'real_target' => $real_target,
-    );
-    $targets[$real_target . ':lon'] = array(
-      'name' => t('Longitude'),
-      'callback' => 'geofield_set_target',
-      'real_target' => $real_target,
-    );
-    $targets[$real_target . ':left'] = array(
-      'name' => t('Left Latitude'),
-      'callback' => 'geofield_set_target',
-      'real_target' => $real_target,
-    );
-    $targets[$real_target . ':top'] = array(
-      'name' => t('Top Longitude'),
-      'callback' => 'geofield_set_target',
-      'real_target' => $real_target,
-    );
-    $targets[$real_target . ':right'] = array(
-      'name' => t('Right Latitude'),
-      'callback' => 'geofield_set_target',
-      'real_target' => $real_target,
-    );
-    $targets[$real_target . ':bottom'] = array(
-      'name' => t('Bottom Longitude'),
-      'callback' => 'geofield_set_target',
-      'real_target' => $real_target,
-    );
-  }
+  $targets[$real_target . ':lat'] = array(
+    'name' => t('Latitude'),
+    'callback' => 'geofield_set_target',
+    'real_target' => $real_target,
+  );
+  $targets[$real_target . ':lon'] = array(
+    'name' => t('Longitude'),
+    'callback' => 'geofield_set_target',
+    'real_target' => $real_target,
+  );
+  $targets[$real_target . ':left'] = array(
+    'name' => t('Left Latitude'),
+    'callback' => 'geofield_set_target',
+    'real_target' => $real_target,
+  );
+  $targets[$real_target . ':top'] = array(
+    'name' => t('Top Longitude'),
+    'callback' => 'geofield_set_target',
+    'real_target' => $real_target,
+  );
+  $targets[$real_target . ':right'] = array(
+    'name' => t('Right Latitude'),
+    'callback' => 'geofield_set_target',
+    'real_target' => $real_target,
+  );
+  $targets[$real_target . ':bottom'] = array(
+    'name' => t('Bottom Longitude'),
+    'callback' => 'geofield_set_target',
+    'real_target' => $real_target,
+  );
 }
 
 /**
