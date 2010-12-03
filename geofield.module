@@ -100,43 +100,44 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
 /**
  * Implementation of hook_feeds_node_processor_targets_alter().
  */
-function geofield_feeds_processor_targets_alter(&$targets, $entity_type, $bundle_name) {
-  foreach (field_info_instances($entity_type, $bundle_name) as $name => $instance) {
+function geofield_feeds_processor_targets_alter(&$targets, $entity_type,
+  $bundle_name) {
+    foreach (field_info_instances($entity_type, $bundle_name) as
+      $name => $instance) {
     $info = field_info_field($name);
     if ($info['type'] == 'geofield') {
-      $real_target = $info['field_name'];
+      $targets[$info['field_name'] . ':lat'] = array(
+        'name' => t($instance['label'] . ' Latitude'),
+        'callback' => 'geofield_set_target',
+        'real_target' => $info['field_name'],
+      );
+      $targets[$info['field_name'] . ':lon'] = array(
+        'name' => t($instance['label'] . ' Longitude'),
+        'callback' => 'geofield_set_target',
+        'real_target' => $info['field_name'],
+      );
+      $targets[$info['field_name'] . ':left'] = array(
+        'name' => t($instance['label'] . ' Left Latitude'),
+        'callback' => 'geofield_set_target',
+        'real_target' => $info['field_name'],
+      );
+      $targets[$info['field_name'] . ':top'] = array(
+        'name' => t($instance['label'] . ' Top Longitude'),
+        'callback' => 'geofield_set_target',
+        'real_target' => $info['field_name'],
+      );
+      $targets[$info['field_name'] . ':right'] = array(
+        'name' => t($instance['label'] . ' Right Latitude'),
+        'callback' => 'geofield_set_target',
+        'real_target' => $info['field_name'],
+      );
+      $targets[$info['field_name'] . ':bottom'] = array(
+        'name' => t($instance['label'] . ' Bottom Longitude'),
+        'callback' => 'geofield_set_target',
+        'real_target' => $info['field_name'],
+      );
     }
   }
-  $targets[$real_target . ':lat'] = array(
-    'name' => t('Latitude'),
-    'callback' => 'geofield_set_target',
-    'real_target' => $real_target,
-  );
-  $targets[$real_target . ':lon'] = array(
-    'name' => t('Longitude'),
-    'callback' => 'geofield_set_target',
-    'real_target' => $real_target,
-  );
-  $targets[$real_target . ':left'] = array(
-    'name' => t('Left Latitude'),
-    'callback' => 'geofield_set_target',
-    'real_target' => $real_target,
-  );
-  $targets[$real_target . ':top'] = array(
-    'name' => t('Top Longitude'),
-    'callback' => 'geofield_set_target',
-    'real_target' => $real_target,
-  );
-  $targets[$real_target . ':right'] = array(
-    'name' => t('Right Latitude'),
-    'callback' => 'geofield_set_target',
-    'real_target' => $real_target,
-  );
-  $targets[$real_target . ':bottom'] = array(
-    'name' => t('Bottom Longitude'),
-    'callback' => 'geofield_set_target',
-    'real_target' => $real_target,
-  );
 }
 
 /**
@@ -155,4 +156,14 @@ function geofield_feeds_processor_targets_alter(&$targets, $entity_type, $bundle
 function geofield_set_target($source, $entity, $target, $value) {
   list($field_name, $sub_field) = explode(':', $target, 2);
   $entity->{$field_name}['und'][0][$sub_field] = $value;
+}
+
+/**
+ * Implementation of hook_view_api().
+ */
+function geofield_views_api() {
+  return array(
+    'api' => '3.0-alpha1',
+    'path' => drupal_get_path('module', 'geofield')
+    . '/views');
 }
