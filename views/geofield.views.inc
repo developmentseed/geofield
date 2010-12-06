@@ -4,11 +4,6 @@
 /**
  * Implementation of hook_field_views_data
  */
-// function geofield_field_views_data($field) {
-//   $field['handler'] = 'geofield_handler_field_point';
-//   return $field;
-// }
-
 function geofield_field_views_data_alter(&$result, $field, $module) {
   if ($module == 'geofield') {
     foreach ($result as &$r) {

@@ -16,6 +16,8 @@ function geofield_field_info() {
 
 /**
  * Implements of hook_content_is_empty().
+ * 
+ * TODO: lat lon are optional, so this is broken.
  */
 function geofield_field_is_empty($item, $field) {
   return (empty($item['lat']) || empty($item['lon']));
