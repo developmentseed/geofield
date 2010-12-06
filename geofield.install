@@ -16,22 +16,22 @@ function geofield_field_schema($field) {
         'length' => 255,
         'not null' => FALSE,
       ),
-      'top_left_lat' => array(
+      'left' => array(
         'type' => 'float',
         'length' => 255,
         'not null' => FALSE,
       ),
-      'top_left_lon' => array(
+      'top' => array(
         'type' => 'float',
         'length' => 255,
         'not null' => FALSE,
       ),
-      'bottom_right_lat' => array(
+      'right' => array(
         'type' => 'float',
         'length' => 255,
         'not null' => FALSE,
       ),
-      'bottom_right_lon' => array(
+      'bottom' => array(
         'type' => 'float',
         'length' => 255,
         'not null' => FALSE,

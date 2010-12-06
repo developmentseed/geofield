@@ -58,6 +58,7 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
     '#title' => 'Latitude',
     '#required' => FALSE,
     '#type' => 'textfield',
+    '#attributes' => array('id' => 'lat'),
     '#default_value' => isset($items[$delta]['lat']) ?
       $items[$delta]['lat'] : NULL,
   );
@@ -65,6 +66,7 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
     '#title' => 'Longitude',
     '#required' => FALSE,
     '#type' => 'textfield',
+    '#attributes' => array('id' => 'lon'),
     '#default_value' => isset($items[$delta]['lon']) ?
       $items[$delta]['lon'] : NULL,
   );
@@ -72,6 +74,7 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
     '#title' => 'Left Latitude',
     '#required' => FALSE,
     '#type' => 'textfield',
+    '#attributes' => array('id' => 'left'),
     '#default_value' => isset($items[$delta]['left']) ?
       $items[$delta]['left'] : NULL,
   );
@@ -79,6 +82,7 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
     '#title' => 'Top Longitude',
     '#required' => FALSE,
     '#type' => 'textfield',
+    '#attributes' => array('id' => 'top'),
     '#default_value' => isset($items[$delta]['top']) ?
       $items[$delta]['top'] : NULL,
   );
@@ -86,6 +90,7 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
     '#title' => 'Right Latitude',
     '#required' => FALSE,
     '#type' => 'textfield',
+    '#attributes' => array('id' => 'right'),
     '#default_value' => isset($items[$delta]['right']) ?
       $items[$delta]['right'] : NULL,
   );
@@ -93,10 +98,31 @@ function geofield_field_widget_form(&$form, &$form_state, $field, $instance,
     '#title' => 'Bottom Longitude',
     '#required' => FALSE,
     '#type' => 'textfield',
+    '#attributes' => array('id' => 'bottom'),
     '#default_value' => isset($items[$delta]['bottom']) ?
       $items[$delta]['bottom'] : NULL,
   );
+  if (module_exists('openlayers_ui')) {
+    $element['helpmap'] = array(
+      '#markup' => '<div class="form-item geotaxonomy-latlon-helpmap" style="display:block">'. geofield_form_latlon_map() .'</div>'
+    );
+    $element['helpmap_desc'] = array(
+      '#markup' => t('Click the map to set a point for this location. Shift-click and drag to set bounds. Pan and zoom with arrows and the zoom bar.')
+    );
+  }
   return $element;
+}
+
+/**
+ * Create LatLon Helper Map.
+ */
+function geofield_form_latlon_map($defaults = array()) {
+  // Pass variables etc. to javascript
+  // Set up our map to help set lat and lon
+  // This map will always be projected as 4326 and use just the default map preset
+  $preset = openlayers_preset_load('geofield_map');
+  $map = $preset->data;
+  return openlayers_render_map($map);
 }
 
 /**
@@ -168,4 +194,78 @@ function geofield_views_api() {
     'api' => '3.0-alpha1',
     'path' => drupal_get_path('module', 'geofield')
     . '/views');
+}
+
+/**
+ * Implements hook_ctools_plugin_type
+ */
+function geofield_ctools_plugin_type() {
+  return array(
+    'behaviors' => array(
+      'use hooks' => TRUE,
+    )
+  );
+}
+
+/**
+ * Implements hook_ctools_plugin_api().
+ */
+function geofield_ctools_plugin_api($module, $api) {
+  return array('version' => 1);
+}
+
+/**
+ * Implements hook_openlayers_behaviors().
+ */
+function geofield_openlayers_behaviors() {
+  return array(
+    'openlayers_behavior_geofield' => array(
+      'title' => t('Geofield'),
+      'description' => t('Fuels the geotaxonomy map-input form.'),
+      'type' => 'layer',
+      'path' => drupal_get_path('module', 'geofield') .'/includes/behaviors',
+      'file' => 'openlayers_behavior_geofield.inc',
+      'behavior' => array(
+        'class' => 'openlayers_behavior_geofield',
+        'parent' => 'openlayers_behavior',
+      ),
+    ),
+  );
+}
+
+/**
+ * Implementation of hook_openlayers_presets().
+ */
+function geofield_openlayers_presets() {
+  // Create full preset array
+  $default = new stdClass();
+  $default->api_version = 1;
+  $default->name = 'geofield_map';
+  $default->title = t('Geofield Map');
+  $default->description = t('A Map Used for Geofield Input');
+  $default->data = array(
+    'projection' => '900913',
+    'width' => '600px',
+    'default_layer' => 'osm_mapnik',
+    'height' => '400px',
+    'center' => array(
+      'initial' => array(
+        'centerpoint' => '0,0',
+        'zoom' => '2'
+      )
+    ),
+    'options' => array(
+      'maxExtent' => openlayers_get_extent('900913'),
+    ),
+    'behaviors' => array(
+      'openlayers_behavior_panzoombar' => array(),
+      'openlayers_behavior_attribution' => array(),
+      'openlayers_behavior_geofield' => array(),
+      'openlayers_behavior_keyboarddefaults' => array()
+    ),
+    'layers' => array(
+      'osm_mapnik',
+    )
+  );
+  return array('geofield_map' => $default);
 }
