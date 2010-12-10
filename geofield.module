@@ -15,6 +15,25 @@ function geofield_field_info() {
 }
 
 /**
+ * Implements hook_field_presave().
+ * PDO throws an error when attempting to insert an empty string into a float
+ * field. Go through all values and convert empty strings to NULL.
+ */
+function geofield_field_presave($entity_type, $entity, $field, $instance, $langcode, &$items) {
+  if ($field['type'] === 'geofield') {
+    foreach ($items as $delta => $item) {
+      if (!empty($item)) {
+        foreach ($item as $k => $v) {
+          if ($v === '') {
+            $items[$delta][$k] = NULL;
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
  * Implements of hook_content_is_empty().
  * 
  * TODO: lat lon are optional, so this is broken.
