@@ -9,19 +9,12 @@ class geofield_handler_field_point extends views_handler_field_field {
     if (isset($values->_field_data[$this->field_alias])) {
       // Prepare arguments for rendering based on the objects cached in the
       // pre-render phase and the display options for this field.
-      $entity_type = $values->_field_data[$this->field_alias]['entity_type'];
-      $object = $values->_field_data[$this->field_alias]['object'];
-
-      foreach ($object as $a) {
-        if (is_array($a)) {
-          foreach ($a as $b) {
-            return 'POINT( ' . $b[0]['lon'] . ' ' . $b[0]['lat'] . ')';
-          }
-        }
+      $field_name = $this->definition['field_info']['field_name'];
+      if (isset($values->_field_data[$this->field_alias]['entity']->{$field_name})) {
+        $coord = $values->_field_data[$this->field_alias]['entity']->{$field_name}['und'][0];
+        return check_plain('POINT( ' . $coord['lon'] . ' ' . $coord['lat'] . ')');
       }
     }
-    else {
-      return '';
-    }
+    return '';
   }
 }
